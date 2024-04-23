@@ -52,7 +52,10 @@ return {
     'mizlan/iswap.nvim',
     event = 'VeryLazy',
   },
-  'Weissle/persistent-breakpoints.nvim',
+  {
+    'Weissle/persistent-breakpoints.nvim',
+    opts = {},
+  },
   {
     'johmsalas/text-case.nvim',
     dependencies = { 'nvim-telescope/telescope.nvim' },
@@ -75,5 +78,34 @@ return {
     'Aasim-A/scrollEOF.nvim',
     event = { 'CursorMoved', 'WinScrolled' },
     opts = {},
+  },
+  'mzlogin/vim-markdown-toc',
+  'KabbAmine/vCoolor.vim',
+  {
+    'brenoprata10/nvim-highlight-colors',
+    opts = {},
+  },
+  'nvim-neotest/nvim-nio',
+  'dhruvasagar/vim-table-mode',
+  {
+    'AckslD/nvim-neoclip.lua',
+    requires = {
+      { 'nvim-telescope/telescope.nvim' },
+    },
+    opts = {},
+  },
+  {
+    'ray-x/go.nvim',
+    dependencies = { -- optional packages
+      'ray-x/guihua.lua',
+      'neovim/nvim-lspconfig',
+      'nvim-treesitter/nvim-treesitter',
+    },
+    config = function()
+      require('go').setup()
+    end,
+    event = { 'CmdlineEnter' },
+    ft = { 'go', 'gomod' },
+    build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
   },
 }

@@ -88,10 +88,44 @@ return {
     table.insert(require('dap').configurations.python, {
       type = 'python',
       request = 'launch',
-      name = '(Rye) Run file',
+      name = '(Venv) Run file',
       program = '${file}',
-      python = { '/usr/bin/rye', 'run', 'python', '-m', 'debugpy', '--listen', 'localhost:5678', '--wait-for-client' },
-      -- ... more options, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
+      pythonPath = function()
+        -- debugpy supports launching an application with a different interpreter then the one used to launch debugpy itself.
+        -- The code below looks for a `venv` or `.venv` folder in the current directly and uses the python within.
+        -- You could adapt this - to for example use the `VIRTUAL_ENV` environment variable.
+        local cwd = vim.fn.getcwd()
+        if vim.fn.executable(cwd .. '/venv/bin/python') == 1 then
+          return cwd .. '/venv/bin/python'
+        elseif vim.fn.executable(cwd .. '/.venv/bin/python') == 1 then
+          print('USING ' .. cwd)
+          return cwd .. '/.venv/bin/python'
+        else
+          return '~/.local/share/python/.venv/bin/python'
+        end
+      end,
+    })
+    table.insert(require('dap').configurations.python, {
+      type = 'python',
+      request = 'launch',
+      name = '(Venv) Run debug.py',
+      program = function()
+        return vim.fn.getcwd() .. '/debug.py'
+      end,
+      pythonPath = function()
+        -- debugpy supports launching an application with a different interpreter then the one used to launch debugpy itself.
+        -- The code below looks for a `venv` or `.venv` folder in the current directly and uses the python within.
+        -- You could adapt this - to for example use the `VIRTUAL_ENV` environment variable.
+        local cwd = vim.fn.getcwd()
+        if vim.fn.executable(cwd .. '/venv/bin/python') == 1 then
+          return cwd .. '/venv/bin/python'
+        elseif vim.fn.executable(cwd .. '/.venv/bin/python') == 1 then
+          print('USING ' .. cwd)
+          return cwd .. '/.venv/bin/python'
+        else
+          return '~/.local/share/python/.venv/bin/python'
+        end
+      end,
     })
   end,
 }

@@ -148,6 +148,8 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+vim.opt.termguicolors = true
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -279,7 +281,7 @@ require('lazy').setup {
         ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
         ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
         ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>W'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+        ['<leader>M'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
       }
     end,
   },
@@ -484,7 +486,7 @@ require('lazy').setup {
 
           -- Fuzzy find all the symbols in your current workspace
           --  Similar to document symbols, except searches over your whole project.
-          map('<leader>Ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+          map('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
           -- Rename the variable under your cursor
           --  Most Language Servers support renaming across files, etc.
@@ -541,6 +543,14 @@ require('lazy').setup {
       local servers = {
         -- clangd = {},
         gopls = {},
+        cssls = {},
+        biome = {},
+        html = {},
+        htmx = {},
+        lwc_ls = {},
+        tsserver = {},
+        tailwindcss = {},
+        yamlls = {},
         pyright = {
           settings = {
             pyright = {
@@ -554,17 +564,6 @@ require('lazy').setup {
             },
           },
         },
-
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
-        --
-
         lua_ls = {
           -- cmd = {...},
           -- filetypes { ...},
@@ -636,17 +635,29 @@ require('lazy').setup {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         python = { 'isort', 'black' },
+        go = { 'golines', 'goimports' },
+        markdown = { 'mdformat' },
+        css = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        typescript = { 'prettier' },
+        json = { 'prettier' },
+        yaml = { 'yamlfmt' },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        javascript = { { 'prettierd', 'prettier' } },
+        javascript = { { 'prettier', 'prettierd' } },
+      },
+      formatters = {
+        prettier = {
+          args = { '--stdin-filepath', '$FILENAME' },
+        },
       },
     },
   },
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
-    event = 'InsertEnter',
+    event = { 'InsertEnter', 'CmdlineEnter' },
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
       {
@@ -729,7 +740,7 @@ require('lazy').setup {
           end, { 'i', 's' }),
         },
         sources = {
-          { name = 'nvim_lsp' },
+          -- { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
           -- Dont suggest Text from nvm_lsp
